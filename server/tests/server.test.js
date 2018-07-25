@@ -14,7 +14,7 @@ const TODOS = [{
 
 beforeEach((done) => {
   TODO.remove({}).then(() => {
-    return TODO.insertmany(TODOS);
+    return TODO.insertMany(TODOS);
   }).then(() => done());
 });
 
@@ -67,7 +67,7 @@ describe('POST /todos', () => {
 describe('GET /todos', () => {
   it('should get all todos', (done) => {
     REQUEST(APP)
-    .get('todos')
+    .get('/todos')
     .expect(200)
     .expect((res) => {
       EXPECT(res.body.todos.length).toBe(3);
