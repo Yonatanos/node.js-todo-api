@@ -4,18 +4,31 @@ const REQUEST = require('supertest');
 const APP = require('./../server').app;
 const TODO = require('./../models/todo').ToDo;
 
+const TODOS = [{
+  text: "Wake up"
+}, {
+  text: "Organize room"
+}, {
+  text: "Team lunch"
+}];
+
 beforeEach((done) => {
-  TODO.remove({}).then(() => done());
+  TODO.remove({}).then(() => {
+    return TODO.insertmany(TODOS);
+  }).then(() => done());
 });
+
+
 describe('POST /todos', () => {
   it('should create a new todo', (done) => {
     let text = 'Test ToDo text';
+
     REQUEST(APP)
     .post('/todos')
     .send({text})
     .expect(200)
     .expect((response) => {
-      EXPECT(response.body.text).toEqual(text);
+      EXPECT(response.body.text).toBe(text);
     })
     .end((err, response) => {
       if (err) {
