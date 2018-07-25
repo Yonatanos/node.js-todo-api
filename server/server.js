@@ -1,5 +1,6 @@
 let express = require('express');
 let bodyParser = require('body-parser');
+let {ObjectID} = require('mongodb');
 
 let {mongoose} = require('./db/mongoose');
 let {ToDo} = require('./models/todo');
@@ -30,6 +31,26 @@ app.get('/todos',(request, response) => {
     response.status(400).send(e);
   });
 });
+
+/* Get a todo by Fetching id from user */
+app.get('/todos/:id', (request, response) => {
+  let id = request.params.id;
+  //ID validity check
+  if (!ObjectID.isValid(id)) {
+     return response.status(404).send();
+  }
+
+  ToDo.findById(id).then((todo) => {
+    if (!todo) {
+      return  response.status(404).send();
+
+    }
+
+ response.send({todo});
+
+  }).catch((e) => response.status(400).send())
+});
+
 
 app.listen(3000, () => {
   console.log('Started on port 3000');
