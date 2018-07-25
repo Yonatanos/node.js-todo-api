@@ -35,7 +35,7 @@ describe('POST /todos', () => {
         return done(err);
       }
 
-      TODO.find().then((todos) => {
+      TODO.find({text}).then((todos) => {
         EXPECT(todos.length).toBe(1);
         EXPECT(todos[0].text).toBe(text);
         done();
@@ -57,9 +57,21 @@ describe('POST /todos', () => {
         }
 
         TODO.find().then((todos) => {
-          EXPECT(todos.length).toBe(0);
+          EXPECT(todos.length).toBe(3);
           done();
         }).catch((e) => done(e));
       })
+  });
+});
+
+describe('GET /todos', () => {
+  it('should get all todos', (done) => {
+    REQUEST(APP)
+    .get('todos')
+    .expect(200)
+    .expect((res) => {
+      EXPECT(res.body.todos.length).toBe(3);
+    })
+    .end(done);
   });
 });
