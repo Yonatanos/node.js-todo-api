@@ -22,9 +22,18 @@ app.post('/todos', (req, res) => {
   });
 });
 
+/* Get list of all todos */
+app.get('/todos',(request, response) => {
+  ToDo.find().then((todos) => {
+    response.send({todos});
+  }, (e) => {
+    response.status(400).send(e);
+  });
+});
+
 app.listen(3000, () => {
   console.log('Started on port 3000');
-})
+});
 
 module.exports = {app};
 
