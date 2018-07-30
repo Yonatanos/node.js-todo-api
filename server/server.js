@@ -35,9 +35,11 @@
     });
   });
 
+
   /* Get a todo by Fetching id from user */
   app.get('/todos/:id', (request, response) => {
     let id = request.params.id;
+
     //ID validity check
     if (!ObjectID.isValid(id)) {
        return response.status(404).send();
@@ -46,13 +48,30 @@
     ToDo.findById(id).then((todo) => {
       if (!todo) {
         return  response.status(404).send();
-
       }
 
       response.send({todo});
     }).catch((e) => response.status(400).send())
   });
 
+  /* Delete a Todo by ID */
+  app.delete('/todos/:id', (request, response) => {
+    let id = request.params.id;
+    //ID validity check
+    if (!ObjectID.isValid(id)) {
+      console.log("id not valid");
+      return response.status(404).send();
+    }
+
+    ToDo.findByIdAndRemove(id).then((todo) => {
+      console.log("in findID and Remove");
+      if (!todo) {
+        return response.status(404).send();
+      }
+
+      response.send({todo});
+    }).catch((e) => response.status(400).send());
+  });
 
   app.listen(PORT, () => {
     console.log(`Started on port ${PORT}`);
@@ -60,7 +79,8 @@
 
   module.exports = {app};
 
-})();
+
+})(); //End of the code wrapping function (for strict mode)
 
 
 // let newTodo = new toDo({
