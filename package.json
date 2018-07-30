@@ -8,9 +8,9 @@
     "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha server/**/*.test.js --timeout=3000",
     "test-watch": "nodemon --exec 'npm test'"
   },
-  "engines": { 
+  "engines": {
     "node": "v10.6.0"
-  }
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
