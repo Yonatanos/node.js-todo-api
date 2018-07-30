@@ -1,5 +1,6 @@
 (function() {
   "use strict";
+  const _ = require('lodash');
   let express = require('express');
   let bodyParser = require('body-parser');
   let {ObjectID} = require('mongodb');
@@ -70,6 +71,39 @@
       response.send({todo});
     }).catch((e) => response.status(400).send());
   });
+
+  /* Update a Todo by ID */
+  app.patch('/todos/:id', (request, response) => {
+    let id = request.params.id;
+    //copy from the request body the 'text' and/or 'completed' fields if they exist
+    let body = _.pick(request.body, ['text', 'completed', 'completedAt']);
+
+    if (!ObjectID.isValid(id)) {
+      return response.status(404).send();
+    }
+
+    if (body.hasOwnProperty('completedAt')) {
+      return response.status(400).send();
+    }
+    if (_.isBoolean(body.completed) && body.completed) {
+      body.completedAt = new Date().getTime();
+    } else {
+      body.completed = false;
+      body.completedAt = null;
+    }
+
+    ToDo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+          if (!todo) {
+            return result.status(404).send();
+          }
+
+          response.send({todo});
+        }).catch((e) => {
+          console.log('1', e);
+          response.status(400).send();
+        });
+  });
+
 
   app.listen(PORT, () => {
     console.log(`Started on port ${PORT}`);
