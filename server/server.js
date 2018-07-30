@@ -9,6 +9,7 @@
   let {User} = require('./models/user');
 
   let app = express();
+  const PORT = process.env.PORT || 3000;
 
   //Add middlewear
   app.use(bodyParser.json());
@@ -53,8 +54,8 @@
   });
 
 
-  app.listen(3000, () => {
-    console.log('Started on port 3000');
+  app.listen(PORT, () => {
+    console.log(`Started on port ${PORT}`);
   });
 
   module.exports = {app};
