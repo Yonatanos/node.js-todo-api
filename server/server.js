@@ -9,7 +9,7 @@
   let {User} = require('./models/user');
 
   let app = express();
-  const PORT = process.env.PORT || 3000;
+  const PORT = "mongodb://<dbuser>:<dbpassword>@ds259111.mlab.com:59111/todo-app-api"|| 3000;
 
   //Add middlewear
   app.use(bodyParser.json());
