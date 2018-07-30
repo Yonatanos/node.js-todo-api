@@ -1,62 +1,65 @@
-let express = require('express');
-let bodyParser = require('body-parser');
-let {ObjectID} = require('mongodb');
+(function() {
+  "use strict";
+  let express = require('express');
+  let bodyParser = require('body-parser');
+  let {ObjectID} = require('mongodb');
 
-let {mongoose} = require('./db/mongoose');
-let {ToDo} = require('./models/todo');
-let {User} = require('./models/user');
+  let {mongoose} = require('./db/mongoose');
+  let {ToDo} = require('./models/todo');
+  let {User} = require('./models/user');
 
-let app = express();
+  let app = express();
 
-//Add middlewear
-app.use(bodyParser.json());
+  //Add middlewear
+  app.use(bodyParser.json());
 
-app.post('/todos', (req, res) => {
-  let toDo = new ToDo({
-    text: req.body.text
+  app.post('/todos', (req, res) => {
+    let toDo = new ToDo({
+      text: req.body.text
+    });
+
+    toDo.save().then((document) => {
+      res.send(document);
+    }, (e) => {
+      res.status(400).send(e);
+    });
   });
 
-  toDo.save().then((document) => {
-    res.send(document);
-  }, (e) => {
-    res.status(400).send(e);
+  /* Get list of all todos */
+  app.get('/todos',(request, response) => {
+    ToDo.find().then((todos) => {
+      response.send({todos});
+    }, (e) => {
+      response.status(400).send(e);
+    });
   });
-});
 
-/* Get list of all todos */
-app.get('/todos',(request, response) => {
-  ToDo.find().then((todos) => {
-    response.send({todos});
-  }, (e) => {
-    response.status(400).send(e);
-  });
-});
-
-/* Get a todo by Fetching id from user */
-app.get('/todos/:id', (request, response) => {
-  let id = request.params.id;
-  //ID validity check
-  if (!ObjectID.isValid(id)) {
-     return response.status(404).send();
-  }
-
-  ToDo.findById(id).then((todo) => {
-    if (!todo) {
-      return  response.status(404).send();
-
+  /* Get a todo by Fetching id from user */
+  app.get('/todos/:id', (request, response) => {
+    let id = request.params.id;
+    //ID validity check
+    if (!ObjectID.isValid(id)) {
+       return response.status(404).send();
     }
 
- response.send({todo});
+    ToDo.findById(id).then((todo) => {
+      if (!todo) {
+        return  response.status(404).send();
 
-  }).catch((e) => response.status(400).send())
-});
+      }
+
+      response.send({todo});
+    }).catch((e) => response.status(400).send())
+  });
 
 
-app.listen(3000, () => {
-  console.log('Started on port 3000');
-});
+  app.listen(3000, () => {
+    console.log('Started on port 3000');
+  });
 
-module.exports = {app};
+  module.exports = {app};
+
+})();
 
 
 // let newTodo = new toDo({
