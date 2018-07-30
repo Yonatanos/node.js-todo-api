@@ -59,12 +59,10 @@
     let id = request.params.id;
     //ID validity check
     if (!ObjectID.isValid(id)) {
-      console.log("id not valid");
       return response.status(404).send();
     }
 
     ToDo.findByIdAndRemove(id).then((todo) => {
-      console.log("in findID and Remove");
       if (!todo) {
         return response.status(404).send();
       }
