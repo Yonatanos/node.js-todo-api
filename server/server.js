@@ -1,5 +1,7 @@
 (function() {
   "use strict";
+
+  require('./server/config/config');
   const _ = require('lodash');
   let express = require('express');
   let bodyParser = require('body-parser');
@@ -10,7 +12,7 @@
   let {User} = require('./models/user');
 
   let app = express();
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT;
 
   //Add middlewear
   app.use(bodyParser.json());
