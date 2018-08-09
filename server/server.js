@@ -10,6 +10,8 @@
   let {mongoose} = require('./db/mongoose');
   let {ToDo} = require('./models/todo');
   let {User} = require('./models/user');
+  let {authenticate} = require('./middlewear/authenticate');
+
 
   let app = express();
   const PORT = process.env.PORT;
@@ -132,10 +134,14 @@
     }).then((token) => {
       res.header('x-auth', token).status(200).send(user);
     }).catch((e) => {
-      res.status(200).send(e);
+      res.status(400).send(e);
     })
   });
 
+  /* Private route */
+  app.get('/users/me', authenticate, (request, response) => {
+      response.send(request.user);
+  });
 
   app.listen(PORT, () => {
     console.log(`Started on port ${PORT}`);
