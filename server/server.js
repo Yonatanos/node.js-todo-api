@@ -17,6 +17,7 @@
   //Add middlewear
   app.use(bodyParser.json());
 
+  /* Post a todo task */
   app.post('/todos', (req, res) => {
     let toDo = new ToDo({
       text: req.body.text
@@ -104,6 +105,35 @@
           console.log('1', e);
           response.status(400).send();
         });
+  });
+
+  /* Post a new user */
+  // app.post('/users', (request, response) => {
+  //   let body = _.pick(request.body, ['email', 'password']);
+  //   let user = new User(body);
+  //
+  //   user.save().then(() => {
+  //     return user.generateAuthToken()
+  //   }).then((token) => {
+  //     response.header('x-auth', token).send(user);
+  //   }).catch((e) => {
+  //     response.status(400).send(e);
+  //   });
+  // });
+
+
+  // POST /users
+  app.post('/users', (req, res) => {
+    var body = _.pick(req.body, ['email', 'password']);
+    var user = new User(body);
+
+    user.save().then(() => {
+      return user.generateAuthToken();
+    }).then((token) => {
+      res.header('x-auth', token).status(200).send(user);
+    }).catch((e) => {
+      res.status(200).send(e);
+    })
   });
 
 
